@@ -1,10 +1,14 @@
-const book = {
-  title: "Atomic Habits",
-  author: "James Clear",
-  price: 399,
-  category: "Self Help",
-  description: "A book about building habits",
-  imageUrl: "",
-  stock: 10,
-  createdAt: Timestamp
-}
+const createBook = (
+  title,
+  price,
+  category,
+  description,
+  imageUrl,
+) => ({
+  title,
+  price : Number(price),
+  category,
+  description,
+  imageUrl,
+  createAt : new Date()
+})

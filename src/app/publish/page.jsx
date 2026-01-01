@@ -120,11 +120,13 @@ const PublishPage = () => {
   );
 };
 
-const page = () => {
-  return (
-    <ProtectedRoutes>
-      <PublishPage />
-    </ProtectedRoutes>
-  );
-};
-export default page;
+export default PublishPage;
+
+// const page = () => {
+//   return (
+//     <ProtectedRoutes>
+//       <PublishPage />
+//     </ProtectedRoutes>
+//   );
+// };
+// export default page;
