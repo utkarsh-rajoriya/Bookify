@@ -1,13 +1,17 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProtectedRoutes from "@/components/auth/ProtectedRoutes";
+import { useAuthContext } from "@/contexts/authContext";
 
 const PublishPage = () => {
+  const { user } = useAuthContext();
+  const [loading, setLoading] = useState(false);
+
   const [book, setBook] = useState({
     title: "",
     price: "",
@@ -31,9 +35,56 @@ const PublishPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const fileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Book object:", book);
+    setLoading(true);
+
+    try {
+      console.log("🚀 Publishing book...");
+
+      const imageBase64 = book.bookImage
+        ? await fileToBase64(book.bookImage)
+        : null;
+
+      const res = await fetch("/api/books", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: book.title,
+          price: book.price,
+          category: book.category,
+          description: book.description,
+          bookImage: imageBase64,
+          author: user.email,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const data = await res.json();
+      console.log("🎉 Book published successfully!", data);
+
+      setBook({
+        title: "",
+        price: "",
+        category: "",
+        description: "",
+        bookImage: null,
+      });
+      setLoading(false);
+    } catch (error) {
+      console.error("❌ Publish failed:", error);
+    }
   };
 
   return (
@@ -110,9 +161,15 @@ const PublishPage = () => {
             </div>
 
             {/* Submit */}
-            <Button type="submit" className="w-full">
-              Publish Book
-            </Button>
+            {!loading ? (
+              <Button type="submit" className="w-full">
+                Publish Book
+              </Button>
+            ) : (
+              <Button className="w-full" disabled>
+                Publishing...
+              </Button>
+            )}
           </form>
         </CardContent>
       </Card>
@@ -120,13 +177,13 @@ const PublishPage = () => {
   );
 };
 
-export default PublishPage;
+// export default PublishPage;
 
-// const page = () => {
-//   return (
-//     <ProtectedRoutes>
-//       <PublishPage />
-//     </ProtectedRoutes>
-//   );
-// };
-// export default page;
+const page = () => {
+  return (
+    <ProtectedRoutes>
+      <PublishPage />
+    </ProtectedRoutes>
+  );
+};
+export default page;

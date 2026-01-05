@@ -23,12 +23,12 @@ const SignupModal = ({ open, setOpen }) => {
   const { user } = useAuthContext();
 
   const [form, setForm] = useState({ email: "", password: "" });
-  const [mode, setMode] = useState("login"); // login | signup
+  const [mode, setMode] = useState("login");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  /* 🔥 AUTO CLOSE MODAL WHEN USER AUTHENTICATES */
+ 
   useEffect(() => {
     if (user) {
       setOpen(false);
@@ -74,8 +74,6 @@ const SignupModal = ({ open, setOpen }) => {
       } else {
         response = await signupWithEmail(form.email, form.password);
       }
-
-      console.log("Auth success:", response.user);
       setSuccess(true);
     } catch (err) {
       setError(getErrorMessage(err));
@@ -89,8 +87,7 @@ const SignupModal = ({ open, setOpen }) => {
     setLoading(true);
 
     try {
-      const response = await googleLogin();
-      console.log("Google login:", response.user);
+      await googleLogin();
       setSuccess(true);
     } catch (err) {
       setError(getErrorMessage(err));
