@@ -60,7 +60,7 @@ const BooksPage = () => {
                 />
               </div>
 
-              <div className="absolute top-2 left-2 px-3 italic text-lg text-white bg-black/40 rounded-2xl">
+              <div className="absolute top-2 left-2 px-3 italic text-lg text-white bg-black/70 rounded-2xl">
                 {book.category}
               </div>
 

@@ -48,7 +48,6 @@ const PublishPage = () => {
     setLoading(true);
 
     try {
-      console.log("🚀 Publishing book...");
 
       const imageBase64 = book.bookImage
         ? await fileToBase64(book.bookImage)
@@ -64,6 +63,7 @@ const PublishPage = () => {
           description: book.description,
           bookImage: imageBase64,
           author: user.email,
+          authorId: user.uid,
         }),
       });
 
@@ -72,7 +72,6 @@ const PublishPage = () => {
       }
 
       const data = await res.json();
-      console.log("🎉 Book published successfully!", data);
 
       setBook({
         title: "",

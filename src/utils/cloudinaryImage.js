@@ -19,5 +19,6 @@ export const getImage = async (publicId) => {
 };
 
 export const deleteImage = async (publicId) => {
+  if (!publicId) return { result: "skipped" };
   return await cloudinary.uploader.destroy(publicId);
 };

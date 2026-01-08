@@ -2,10 +2,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import SignupModal from "@/components/auth/SignupModal"; 
-import { useAuthContext } from "@/contexts/authContext"; 
+import SignupModal from "@/components/auth/SignupModal";
+import { useAuthContext } from "@/contexts/authContext";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const navigate = useRouter();
   const [open, setOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -43,7 +45,7 @@ const Navbar = () => {
     <>
       <nav className="bg-neutral-primary fixed w-full z-20 top-0 start-0 border-b border-default">
         <div className="max-w-7xl flex flex-wrap items-center justify-between mx-auto p-4">
-          {/* 1. Logo */}
+          {/* Logo */}
           <Link
             href="/"
             className="flex items-center space-x-3 rtl:space-x-reverse"
@@ -62,7 +64,6 @@ const Navbar = () => {
             {/* Auth Section */}
             {user ? (
               <div className="relative" ref={dropdownRef}>
-                {/* Avatar Button */}
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center justify-center focus:outline-none"
@@ -80,7 +81,6 @@ const Navbar = () => {
                   )}
                 </button>
 
-                {/* Dropdown Menu */}
                 {dropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 border border-default z-50">
                     <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
@@ -119,7 +119,7 @@ const Navbar = () => {
               </Button>
             )}
 
-            {/* Mobile Toggle Button */}
+            {/* Mobile Toggle */}
             <button
               type="button"
               onClick={() => setOpen(!open)}
@@ -128,7 +128,6 @@ const Navbar = () => {
               <span className="sr-only">Open main menu</span>
               <svg
                 className="w-6 h-6"
-                aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -144,14 +143,13 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* 3. Navigation Links (Collapsible) */}
+          {/* Navigation Links */}
           <div
-            id="navbar-default"
             className={`w-full md:flex md:w-auto md:order-1 ${
               open ? "block" : "hidden"
             }`}
           >
-            <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-default rounded-base bg-neutral-secondary-soft md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-neutral-primary items-center">
+            <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-default rounded-base bg-neutral-secondary-soft md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-neutral-primary items-center">
               <li>
                 <Link
                   href="/books"
@@ -170,13 +168,25 @@ const Navbar = () => {
                 </Link>
               </li>
 
+              {user && (
+                <li>
+                  <button
+                    onClick={() =>
+                      navigate.push(`/myUploads/${user.uid}`)
+                    }
+                    className="block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:hover:text-fg-brand md:p-0 hover:cursor-pointer"
+                  >
+                    My Uploads
+                  </button>
+                </li>
+              )}
+
               <li>
-                <a className="block py-2 px-3 text-heading text-gray-500 rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:hover:text-fg-brand md:p-0 cursor-pointer">
+                <span className="block py-2 px-3 text-gray-500 cursor-not-allowed md:p-0">
                   Pricing
-                </a>
+                </span>
               </li>
 
-              {/* Mobile Only Sign In (If user is NOT logged in) */}
               {!user && (
                 <li className="md:hidden mt-2 w-full">
                   <Button
@@ -192,7 +202,6 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Signup Modal */}
       <SignupModal open={signupOpen} setOpen={setSignupOpen} />
     </>
   );
